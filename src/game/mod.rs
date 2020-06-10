@@ -94,10 +94,10 @@ pub fn main() {
 
         // Render
         // Clear All
-        execute!(stdout, Clear(ClearType::All)).unwrap();
+        queue!(stdout, Clear(ClearType::All)).unwrap();
 
         // Food
-        execute!(stdout, cursor::MoveTo(food.x, food.y), style::Print("x")).unwrap();
+        queue!(stdout, cursor::MoveTo(food.x, food.y), style::Print("x")).unwrap();
 
         // Snake body
         for point in snake.body.iter() {
