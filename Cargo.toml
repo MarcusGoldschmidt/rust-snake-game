@@ -18,4 +18,4 @@ members = [
 
 [dependencies]
 crossterm = "0.17.5"
-rand = "0.7.3"
+rand = {version = "0.7.3", default-features=false, features=["small_rng"]}

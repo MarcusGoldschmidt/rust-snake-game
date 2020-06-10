@@ -7,8 +7,8 @@ use crossterm::{
     execute, queue, style,
 };
 
-use rand::rngs::ThreadRng;
-use rand::Rng;
+use rand::rngs::SmallRng;
+use rand::{Rng, SeedableRng};
 use std::io::{stdout, Write};
 use std::sync::mpsc::{channel, TryRecvError};
 use std::{thread, time};
@@ -25,11 +25,9 @@ pub fn main() {
     execute!(stdout, Clear(ClearType::All), cursor::Hide).unwrap();
 
     let mut snake = snake::Snake::new(1, 1, term_width, term_height);
-    snake.walk(snake::WalkDirection::Right, true);
-    snake.walk(snake::WalkDirection::Right, true);
-    snake.walk(snake::WalkDirection::Right, true);
-    snake.walk(snake::WalkDirection::Right, true);
-    snake.walk(snake::WalkDirection::Right, true);
+    for _ in 0..=5 {
+        snake.walk(snake::WalkDirection::Right, true);
+    }
 
     let (tx, rx) = channel();
 
@@ -40,7 +38,7 @@ pub fn main() {
     });
 
     // Utils
-    let rng = rand::thread_rng();
+    let mut rng = SmallRng::seed_from_u64(1337);
 
     // Game Logic
     let mut lose: bool;
@@ -62,7 +60,7 @@ pub fn main() {
                     snake = new_snake;
 
                     if grow {
-                        food = generate_new_food(rng, term_width, term_height);
+                        food = generate_new_food(&mut rng, term_width, term_height);
                     }
 
                     last_move = code;
@@ -76,7 +74,7 @@ pub fn main() {
                 snake = new_snake;
 
                 if grow {
-                    food = generate_new_food(rng, term_width, term_height);
+                    food = generate_new_food(&mut rng, term_width, term_height);
                 }
 
                 lose = status_lose;
@@ -114,7 +112,7 @@ pub fn main() {
     .unwrap();
 }
 
-fn generate_new_food(mut rng: ThreadRng, width: u16, height: u16) -> Point {
+fn generate_new_food(rng: &mut impl Rng, width: u16, height: u16) -> Point {
     snake::Point::new(rng.gen_range(0, width), rng.gen_range(0, height))
 }
 
