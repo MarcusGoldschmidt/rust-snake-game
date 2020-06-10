@@ -112,7 +112,9 @@ pub fn main() {
     )
     .unwrap();
 
+    execute!(handle, cursor::Show).unwrap();
     terminal::disable_raw_mode().unwrap();
+    handle.flush().unwrap();
 }
 
 fn generate_new_food(rng: &mut impl Rng, width: u16, height: u16) -> Point {
