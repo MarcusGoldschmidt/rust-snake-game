@@ -111,6 +111,8 @@ pub fn main() {
         style::Print(format!("Pontuação: {}\n", snake.body.len()))
     )
     .unwrap();
+
+    terminal::disable_raw_mode().unwrap();
 }
 
 fn generate_new_food(rng: &mut impl Rng, width: u16, height: u16) -> Point {
