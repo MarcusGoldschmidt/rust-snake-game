@@ -34,10 +34,8 @@ pub fn main() {
     let (tx, rx) = channel();
 
     thread::spawn(move || loop {
-        loop {
-            if let Event::Key(key_event) = event::read().unwrap() {
-                tx.send(key_event).unwrap();
-            }
+        if let Event::Key(key_event) = event::read().unwrap() {
+            tx.send(key_event).unwrap();
         }
     });
 
