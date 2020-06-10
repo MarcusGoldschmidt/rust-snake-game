@@ -16,13 +16,14 @@ use std::{thread, time};
 use crate::game::snake::Point;
 
 pub fn main() {
-    let mut stdout = stdout();
+    let stdout = stdout();
+    let mut handle = stdout.lock();
 
     terminal::enable_raw_mode().unwrap();
 
     let (term_width, term_height) = terminal::size().unwrap();
 
-    execute!(stdout, Clear(ClearType::All), cursor::Hide).unwrap();
+    execute!(handle, Clear(ClearType::All), cursor::Hide).unwrap();
 
     let mut snake = snake::Snake::new(1, 1, term_width, term_height);
     for _ in 0..=5 {
@@ -90,21 +91,21 @@ pub fn main() {
 
         // Render
         // Clear All
-        queue!(stdout, Clear(ClearType::All)).unwrap();
+        queue!(handle, Clear(ClearType::All)).unwrap();
 
         // Food
-        queue!(stdout, cursor::MoveTo(food.x, food.y), style::Print("x")).unwrap();
+        queue!(handle, cursor::MoveTo(food.x, food.y), style::Print("x")).unwrap();
 
         // Snake body
         for point in snake.body.iter() {
-            queue!(stdout, cursor::MoveTo(point.x, point.y), style::Print("o")).unwrap();
+            queue!(handle, cursor::MoveTo(point.x, point.y), style::Print("o")).unwrap();
         }
 
-        stdout.flush().unwrap();
+        handle.flush().unwrap();
     }
 
     execute!(
-        stdout,
+        handle,
         terminal::Clear(ClearType::All),
         cursor::MoveTo(1, 1),
         style::Print(format!("Pontuação: {}\n", snake.body.len()))
