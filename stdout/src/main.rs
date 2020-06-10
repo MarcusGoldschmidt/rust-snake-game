@@ -1,6 +1,6 @@
-use std::thread;
-use std::sync::mpsc::{channel, TryRecvError};
 use std::io::{self};
+use std::sync::mpsc::{channel, TryRecvError};
+use std::thread;
 use std::time::Duration;
 
 fn main() {
