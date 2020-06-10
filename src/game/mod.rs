@@ -9,8 +9,7 @@ use crossterm::{
 
 use rand::rngs::ThreadRng;
 use rand::Rng;
-use std::borrow::BorrowMut;
-use std::io::{stdin, stdout, Write};
+use std::io::{stdout, Write};
 use std::sync::mpsc::{channel, TryRecvError};
 use std::{thread, time};
 
