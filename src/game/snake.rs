@@ -15,10 +15,7 @@ pub struct Point {
 
 impl Point {
     pub fn new(x: u16, y: u16) -> self::Point {
-        self::Point {
-            x,
-            y,
-        }
+        self::Point { x, y }
     }
 }
 
@@ -96,28 +93,27 @@ impl Snake {
         };
 
         new_point.0 = match new_point.0 {
-            x if x <= 0 => self.max_width,
+            x if x == 0 => self.max_width,
             x if x > self.max_width => 0,
-            x => x
+            x => x,
         };
 
         new_point.1 = match new_point.1 {
-            x if x <= 0 => self.max_height,
+            x if x == 0 => self.max_height,
             x if x > self.max_height => 0,
-            x => x
+            x => x,
         };
 
         let next = self::Point::new(new_point.0, new_point.1);
 
-        match self.lose_game(next.x, next.y) {
-            true => false,
-            false => {
-                self.body.push_front(next);
-                if !can_grow {
-                    self.body.pop_back();
-                }
-                true
+        if self.lose_game(next.x, next.y) {
+            false
+        } else {
+            self.body.push_front(next);
+            if !can_grow {
+                self.body.pop_back();
             }
+            true
         }
     }
 }
