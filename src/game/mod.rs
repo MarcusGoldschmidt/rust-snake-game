@@ -13,10 +13,28 @@ use std::io::{stdout, Write};
 use std::sync::mpsc::{channel, TryRecvError};
 use std::{thread, time};
 
+use std::io::BufReader;
+
 use crate::game::snake::Point;
+
+fn play_sound(device: &rodio::Device, rng: &mut impl Rng) {
+    let sink = rodio::Sink::new(&device);
+    let num = rng.gen_range(1, 4);
+    let file = std::fs::File::open(format!("./{}.mp3", num)).unwrap();
+
+    let decoder = rodio::Decoder::new(BufReader::new(file)).unwrap();
+
+    thread::spawn(move || {
+        sink.append(decoder);
+        sink.sleep_until_end();
+    });
+}
 
 pub fn main() {
     let stdout = stdout();
+
+    let device = rodio::default_output_device().unwrap();
+
     let mut handle = stdout.lock();
 
     terminal::enable_raw_mode().unwrap();
@@ -62,6 +80,7 @@ pub fn main() {
 
                     if grow {
                         food = generate_new_food(&mut rng, term_width, term_height);
+                        play_sound(&device, &mut rng);
                     }
 
                     last_move = code;
@@ -76,6 +95,7 @@ pub fn main() {
 
                 if grow {
                     food = generate_new_food(&mut rng, term_width, term_height);
+                    play_sound(&device, &mut rng);
                 }
 
                 lose = status_lose;
